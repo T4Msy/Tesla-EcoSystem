@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --safe-top: env(safe-area-inset-top);
+    --safe-bottom: env(safe-area-inset-bottom);
+  }
+  html, body {
+    background: #0A0A0B;
+    color: #E6E7E8;
+    font-family: 'Inter', 'SF Pro Text', system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.01em;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background:
+      radial-gradient(1200px 600px at 20% -10%, rgba(232,33,39,0.10), transparent 60%),
+      radial-gradient(900px 600px at 110% 0%, rgba(40,80,140,0.10), transparent 50%),
+      #0A0A0B;
+  }
+  button { font-family: inherit; }
+  ::-webkit-scrollbar { width: 0; height: 0; }
+}
+
+@layer components {
+  .glass {
+    background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015));
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+  }
+  .glass-strong {
+    background: linear-gradient(180deg, rgba(20,21,25,0.85), rgba(20,21,25,0.65));
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+  }
+  .hairline { border: 1px solid rgba(255,255,255,0.06); }
+  .text-balance { text-wrap: balance; }
+  .ring-tesla { box-shadow: 0 0 0 1px rgba(232,33,39,0.35), 0 0 24px rgba(232,33,39,0.25); }
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: -1px -1px;
+  }
+  .shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    background-size: 200% 100%;
+  }
+  .text-gradient-red {
+    background: linear-gradient(135deg, #ffffff 0%, #ffd2d3 40%, #E82127 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .no-select { -webkit-user-select: none; user-select: none; }
+}
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* iPhone notch safe-area helpers */
+.pt-safe { padding-top: max(env(safe-area-inset-top), 16px); }
+.pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 16px); }
+
+/* Custom thin dot pulse */
+@keyframes radar {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+.radar::before, .radar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: rgba(232,33,39,0.35);
+  animation: radar 2.4s ease-out infinite;
+}
+.radar::after { animation-delay: 1.2s; }
