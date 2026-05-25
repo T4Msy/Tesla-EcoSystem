@@ -1,0 +1,20 @@
+node_modules
+dist
+dist-ssr
+*.local
+.vite
+.env
+.env.local
+.DS_Store
+
+# Editors
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# TS build cache
+*.tsbuildinfo
