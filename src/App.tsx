@@ -3,6 +3,9 @@ import { AnimatePresence } from 'framer-motion';
 import { useAuthStore } from './stores/authStore';
 import AppShell from './layouts/AppShell';
 import AuthLayout from './layouts/AuthLayout';
+import ToastRenderer from './components/ui/ToastRenderer';
+import TeslaAssistant from './components/ui/TeslaAssistant';
+import PitchMode from './components/ui/PitchMode';
 
 import SplashPage from './pages/SplashPage';
 import OnboardingPage from './pages/OnboardingPage';
@@ -29,11 +32,25 @@ function RequireAuth({ children }: { children: JSX.Element }) {
   return children;
 }
 
+function AuthedOverlays() {
+  const user = useAuthStore((s) => s.user);
+  const location = useLocation();
+  const onRide = location.pathname.startsWith('/ride');
+  if (!user) return null;
+  return (
+    <>
+      {!onRide && <TeslaAssistant />}
+      <PitchMode />
+    </>
+  );
+}
+
 export default function App() {
   const location = useLocation();
   return (
     <div className="relative w-full min-h-[100dvh] overflow-hidden">
       <div className="mx-auto max-w-[440px] min-h-[100dvh] relative">
+        <ToastRenderer />
         <AnimatePresence mode="wait" initial={false}>
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<SplashPage />} />
@@ -68,6 +85,7 @@ export default function App() {
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </AnimatePresence>
+        <AuthedOverlays />
       </div>
     </div>
   );

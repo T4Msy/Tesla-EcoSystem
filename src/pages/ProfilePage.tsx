@@ -1,18 +1,22 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, Settings, Shield, Heart, Bell, HelpCircle, LogOut, Car, Award } from 'lucide-react';
+import { ChevronRight, Settings, Shield, Heart, Bell, HelpCircle, LogOut, Car, Award, Activity } from 'lucide-react';
 import TopBar from '../components/ui/TopBar';
 import Avatar from '../components/ui/Avatar';
 import Card from '../components/ui/Card';
 import Pill from '../components/ui/Pill';
 import AnimatedNumber from '../components/ui/AnimatedNumber';
 import Button from '../components/ui/Button';
+import ActivityFeed from '../components/ui/ActivityFeed';
 import { useAuthStore } from '../stores/authStore';
 import { userImpact } from '../mock/metrics';
+import { toast } from '../stores/toastStore';
 
 export default function ProfilePage() {
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const navigate = useNavigate();
+  const [tab, setTab] = useState<'info' | 'activity'>('info');
 
   return (
     <div className="min-h-[100dvh]">
@@ -61,37 +65,85 @@ export default function ProfilePage() {
           </div>
         </Card>
 
-        {/* Menu */}
-        <Card glass={false} className="!p-1">
-          <MenuItem icon={<Shield className="h-4 w-4" />} label="Segurança Tesla" subtitle="Monitoramento 24/7" />
-          <MenuItem icon={<Heart className="h-4 w-4" />} label="Lugares favoritos" />
-          <MenuItem icon={<Bell className="h-4 w-4" />} label="Notificações" />
-          <MenuItem
-            icon={<Car className="h-4 w-4" />}
-            label="Ser motorista Tesla"
-            subtitle="Acesso ao Driver Hub"
-            onClick={() => navigate('/driver')}
-            accent
-          />
-          <MenuItem icon={<HelpCircle className="h-4 w-4" />} label="Ajuda e suporte" last />
-        </Card>
-
-        <Button
-          variant="ghost"
-          block
-          size="lg"
-          icon={<LogOut className="h-4 w-4" />}
-          onClick={() => {
-            logout();
-            navigate('/login', { replace: true });
-          }}
-        >
-          Sair da conta
-        </Button>
-
-        <div className="text-center text-[10px] text-white/30 tracking-widest uppercase py-3">
-          Tesla UrbanRide v1.0 • Build 2026.05.24
+        {/* Tabs */}
+        <div className="flex gap-2">
+          {(['info', 'activity'] as const).map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={[
+                'flex-1 h-10 rounded-2xl text-[13px] font-semibold border transition flex items-center justify-center gap-1.5',
+                tab === t
+                  ? 'bg-tesla-red text-white border-tesla-red shadow-glow'
+                  : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/8'
+              ].join(' ')}
+            >
+              {t === 'activity' && <Activity className="h-3.5 w-3.5" />}
+              {t === 'info' ? 'Conta' : 'Atividade'}
+            </button>
+          ))}
         </div>
+
+        {tab === 'info' && (
+          <>
+            {/* Menu */}
+            <Card glass={false} className="!p-1">
+              <MenuItem
+                icon={<Shield className="h-4 w-4" />}
+                label="Segurança Tesla"
+                subtitle="Monitoramento 24/7"
+                onClick={() => toast('Segurança ativa', 'Câmeras 360° e frenagem automática ligadas', 'success')}
+              />
+              <MenuItem
+                icon={<Heart className="h-4 w-4" />}
+                label="Lugares favoritos"
+                onClick={() => toast('Lugares favoritos', '5 endereços salvos', 'info')}
+              />
+              <MenuItem
+                icon={<Bell className="h-4 w-4" />}
+                label="Notificações"
+                onClick={() => toast('Notificações', '3 não lidas', 'info')}
+              />
+              <MenuItem
+                icon={<Car className="h-4 w-4" />}
+                label="Ser motorista Tesla"
+                subtitle="Acesso ao Driver Hub"
+                onClick={() => navigate('/driver')}
+                accent
+              />
+              <MenuItem
+                icon={<HelpCircle className="h-4 w-4" />}
+                label="Ajuda e suporte"
+                last
+                onClick={() => toast('Suporte Tesla', 'Abrindo chat com suporte premium', 'tesla')}
+              />
+            </Card>
+
+            <Button
+              variant="ghost"
+              block
+              size="lg"
+              icon={<LogOut className="h-4 w-4" />}
+              onClick={() => {
+                logout();
+                navigate('/login', { replace: true });
+              }}
+            >
+              Sair da conta
+            </Button>
+
+            <div className="text-center text-[10px] text-white/30 tracking-widest uppercase py-3">
+              Tesla UrbanRide v1.0 • Build 2026.05.24
+            </div>
+          </>
+        )}
+
+        {tab === 'activity' && (
+          <Card>
+            <div className="text-[11px] uppercase tracking-widest text-white/45 mb-3">Últimas atividades</div>
+            <ActivityFeed />
+          </Card>
+        )}
       </div>
     </div>
   );
