@@ -7,8 +7,11 @@ import AnimatedNumber from '../components/ui/AnimatedNumber';
 import Pill from '../components/ui/Pill';
 import { userImpact, fleetMetrics } from '../mock/metrics';
 import Button from '../components/ui/Button';
+import { toast } from '../stores/toastStore';
+import { useNavigate } from 'react-router-dom';
 
 export default function FSDPage() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-[100dvh]">
       <TopBar
@@ -108,7 +111,15 @@ export default function FSDPage() {
             </div>
             <ChevronRight className="h-4 w-4 text-white/40" />
           </div>
-          <Button block size="lg" className="mt-3">
+          <Button
+            block
+            size="lg"
+            className="mt-3"
+            onClick={() => {
+              toast('Rota FSD reservada!', 'Ativando supervisão Dojo v3 — aguarde', 'tesla', 4000);
+              setTimeout(() => navigate('/search'), 900);
+            }}
+          >
             Reservar viagem FSD
           </Button>
         </Card>
